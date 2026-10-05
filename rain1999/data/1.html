@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <title>诗笺 · 古诗文查句 · 单页版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #f2ede4;
+            --bg-card: #fcf9f2;
+            --ink: #2c241a;
+            --ink-light: #5a4e3e;
+            --ink-faint: #a0907e;
+            --accent: #9b7b4f;
+            --accent-light: #dac29c;
+            --gold: #c6a86a;
+            --border: #e0d3c0;
+            --shadow: 0 8px 30px rgba(44, 36, 26, 0.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            background: var(--bg-page);
+            color: var(--ink);
+            font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+            line-height: 1.8;
+            min-height: 100vh;
+            padding: 20px 12px 60px;
+            background-image: radial-gradient(circle at 20% 30%, #f7f0e6 0%, #ede4d6 100%);
+        }
+        a {
+            text-decoration: none;
+            color: var(--accent);
+        }
+        a:hover {
+            color: #7a5f3b;
+        }
+        button:focus,
+        .tag:focus,
+        .cand-item:focus,
+        .back-btn:focus,
+        .home-link:focus {
+            outline: none;
+        }
+        .tag:focus-visible,
+        .cand-item:focus-visible,
+        .back-btn:focus-visible,
+        .home-link:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .app {
+            max-width: 860px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: visible;
+        }
+
+        .header {
+            text-align: center;
+            padding: 12px 0 6px;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            display: block;
+            width: 70px;
+            height: 3px;
+            margin: 12px auto 0;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            border-radius: 4px;
+        }
+        .header h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 40px;
+            font-weight: 400;
+            letter-spacing: 8px;
+            color: var(--accent);
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(155, 123, 79, 0.10);
+        }
+        .header .sub {
+            font-size: 15px;
+            color: var(--ink-light);
+            letter-spacing: 4px;
+            margin-top: 2px;
+            font-weight: 300;
+        }
+
+        .search-box {
+            margin: 28px 0 10px;
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            width: 100%;
+            max-width: 100%;
+        }
+        .search-box .input-wrap {
+            flex: 1 1 auto;
+            min-width: 0;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            padding: 0 4px 0 12px;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+        .search-box .input-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(155, 123, 79, 0.12);
+        }
+        .search-box .input-wrap .icon {
+            color: var(--ink-faint);
+            font-size: 16px;
+            margin-right: 6px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .search-box .input-wrap input {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 12px 4px 12px 0;
+            font-size: 16px;
+            font-family: 'Noto Serif SC', serif;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--ink);
+        }
+        .search-box .input-wrap input::placeholder {
+            color: var(--ink-faint);
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            font-size: 14px;
+        }
+        .search-box .input-wrap .clear-btn {
+            flex: 0 0 28px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--ink-faint);
+            cursor: pointer;
+            display: none;
+            transition: color var(--transition);
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .search-box .input-wrap .clear-btn.visible {
+            display: block;
+        }
+        .search-box .input-wrap .clear-btn:hover {
+            color: var(--ink-light);
+        }
+
+        .search-box .btn {
+            flex: 0 0 auto;
+            padding: 0 16px;
+            min-width: 52px;
+            font-size: 18px;
+            font-family: 'Ma Shan Zheng', cursive;
+            letter-spacing: 4px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--accent);
+            color: #fff;
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition);
+            box-shadow: 0 4px 14px rgba(155, 123, 79, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+        .search-box .btn:hover {
+            background: #846a43;
+            transform: translateY(-2px);
+        }
+        .search-box .btn:active {
+            transform: scale(0.96);
+        }
+        .search-box .btn:disabled {
+            background: var(--ink-faint);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .search-hint {
+            font-size: 13px;
+            color: var(--ink-faint);
+            margin: 8px 0 2px;
+            padding-left: 4px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .recent {
+            margin: 16px 0 10px;
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 10px;
+        }
+        .recent.visible {
+            display: flex;
+        }
+        .recent .label {
+            font-size: 13px;
+            color: var(--ink-faint);
+            letter-spacing: 2px;
+            font-weight: 300;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .recent .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-width: 0;
+        }
+        .recent .tag {
+            padding: 2px 12px;
+            font-size: 13px;
+            font-family: 'Noto Serif SC', serif;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--ink-light);
+            transition: all var(--transition);
+            white-space: nowrap;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .recent .tag:hover {
+            border-color: var(--accent-light);
+            color: var(--accent);
+            background: #f8f1e7;
+            transform: translateY(-1px);
+        }
+        .clear-recent-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--ink-faint);
+            padding: 4px;
+            margin-left: 4px;
+            transition: color var(--transition);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .clear-recent-btn:hover {
+            color: #b34a4a;
+        }
+
+        .status {
+            text-align: center;
+            padding: 56px 0 40px;
+            color: var(--ink-faint);
+            font-size: 15px;
+        }
+        .status .spinner {
+            display: inline-block;
+            width: 26px;
+            height: 26px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: -6px;
+            margin-right: 14px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 0 40px;
+            color: var(--ink-faint);
+            font-size: 15px;
+        }
+        .empty .big-icon {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 18px;
+            opacity: 0.6;
+        }
+
+        .error {
+            text-align: center;
+            padding: 36px 16px;
+            color: #b34a4a;
+            font-size: 14px;
+            background: #f8ecec;
+            border-radius: var(--radius-sm);
+            border: 1px solid #e6c8c8;
+            word-break: break-word;
+        }
+
+        .result-section {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 100%;
+        }
+        .result-section .sec-title {
+            font-size: 15px;
+            color: var(--ink-light);
+            letter-spacing: 2px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-weight: 300;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .result-section .sec-title .count {
+            font-weight: 300;
+            color: var(--ink-faint);
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .cand-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        .cand-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            flex-wrap: nowrap;
+        }
+        .cand-item:hover {
+            border-color: var(--accent-light);
+            background: #fcf8ef;
+            transform: translateX(4px);
+            box-shadow: var(--shadow);
+        }
+        .cand-item .name {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            max-width: 45%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+        .cand-item .author {
+            font-size: 13px;
+            color: var(--ink-light);
+            flex-shrink: 0;
+            font-weight: 300;
+            max-width: 20%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+        .cand-item .snippet {
+            flex: 1 1 auto;
+            min-width: 0;
+            font-size: 13px;
+            color: var(--ink-faint);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 300;
+        }
+        .cand-item .badge {
+            flex-shrink: 0;
+            font-size: 10px;
+            padding: 0 8px;
+            border-radius: 20px;
+            font-weight: 400;
+            background: var(--bg-page);
+            white-space: nowrap;
+        }
+        .cand-item .badge.audio {
+            color: #b34a4a;
+            border: 1px solid #dbb6b6;
+            background: #faf0f0;
+        }
+        .cand-item .badge.boost {
+            color: var(--accent);
+            border: 1px solid var(--accent-light);
+            background: #f4ede2;
+        }
+
+        .poem-detail {
+            margin-top: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px 22px;
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.5s ease;
+            width: 100%;
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .poem-detail .head {
+            text-align: center;
+            padding-bottom: 18px;
+            border-bottom: 1px dashed var(--border);
+            margin-bottom: 20px;
+        }
+        .poem-detail .head .title {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: var(--ink);
+            line-height: 1.5;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .poem-detail .head .meta {
+            font-size: 14px;
+            color: var(--ink-light);
+            margin-top: 4px;
+            font-weight: 300;
+            word-break: break-word;
+        }
+        .poem-detail .head .meta .dynasty {
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .poem-detail .head .pinyin-title {
+            font-size: 13px;
+            color: var(--ink-faint);
+            font-style: italic;
+            margin-top: 2px;
+            font-weight: 300;
+            word-break: break-word;
+        }
+
+        .audio-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 0 20px;
+            width: 100%;
+        }
+        .audio-wrap .audio-label {
+            font-size: 13px;
+            color: var(--ink-faint);
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            font-weight: 300;
+        }
+        .audio-wrap audio {
+            width: 100%;
+            max-width: 500px;
+            height: 42px;
+            border-radius: 30px;
+            background: #efe8dd;
+            outline: none;
+        }
+        .audio-wrap audio::-webkit-media-controls-panel {
+            background: #efe8dd;
+        }
+
+        .block-original,
+        .block-translation,
+        .block-notes,
+        .block-appreciation {
+            margin-bottom: 20px;
+        }
+        .block-original .block-label,
+        .block-translation .block-label,
+        .block-notes .block-label,
+        .block-appreciation .block-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 3px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+        }
+        .verse-line-ruby {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            column-gap: 2px;
+            row-gap: 2px;
+        }
+        .char-unit {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            min-width: 28px;
+            text-align: center;
+            vertical-align: bottom;
+            flex-shrink: 0;
+        }
+        .char-unit .pinyin-up {
+            font-size: 11px;
+            color: var(--ink-faint);
+            letter-spacing: 0;
+            line-height: 1.2;
+            margin-bottom: 1px;
+            font-weight: 300;
+            white-space: nowrap;
+        }
+        .char-unit .hanzi-down {
+            font-size: 21px;
+            line-height: 1.2;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: var(--ink);
+        }
+        .char-unit.punct-unit .pinyin-up {
+            visibility: hidden;
+            height: 11px;
+        }
+        .char-unit.punct-unit .hanzi-down {
+            font-size: 19px;
+            color: var(--ink-light);
+            font-weight: 400;
+        }
+
+        .block-translation .trans-text {
+            font-size: 15px;
+            line-height: 2;
+            color: #4a4036;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .block-translation .trans-text .trans-item {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .block-notes .note-item {
+            display: flex;
+            gap: 8px;
+            padding: 4px 0;
+            border-bottom: 1px dotted #ede5d8;
+            font-size: 13px;
+            line-height: 1.8;
+            flex-wrap: wrap;
+        }
+        .block-notes .note-item .word {
+            flex-shrink: 0;
+            font-weight: 600;
+            color: #b34a4a;
+            min-width: 55px;
+        }
+        .block-notes .note-item .def {
+            color: var(--ink-light);
+            flex: 1 1 auto;
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .block-appreciation .appr-content {
+            font-size: 14px;
+            color: #3d3730;
+            line-height: 2;
+            white-space: pre-wrap;
+            margin-bottom: 14px;
+            word-break: break-word;
+        }
+        .block-appreciation .appr-content:last-child {
+            margin-bottom: 0;
+        }
+        .block-appreciation .appr-content .appr-title {
+            font-weight: 600;
+            color: var(--ink-light);
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .back-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .back-nav .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: var(--accent);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+            letter-spacing: 1px;
+            transition: color var(--transition);
+            padding: 4px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+        .back-nav .back-btn:hover {
+            color: #7a5f3b;
+            background: rgba(155, 123, 79, 0.06);
+        }
+        .back-nav .home-link {
+            font-size: 14px;
+            color: var(--ink-faint);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .back-top {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--ink-faint);
+            cursor: pointer;
+            transition: color var(--transition);
+            letter-spacing: 2px;
+        }
+        .back-top:hover {
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--ink-faint);
+            font-size: 12px;
+            font-weight: 300;
+            margin-top: 40px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            letter-spacing: 1px;
+            word-break: break-word;
+        }
+        footer a {
+            color: var(--accent-light);
+            transition: color var(--transition);
+        }
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (min-width: 768px) {
+            .search-box .btn {
+                padding: 0 22px;
+                min-width: 70px;
+                letter-spacing: 6px;
+            }
+            .char-unit {
+                min-width: 36px;
+            }
+            .char-unit .pinyin-up {
+                font-size: 12px;
+            }
+            .char-unit .hanzi-down {
+                font-size: 24px;
+            }
+            .poem-detail {
+                padding: 28px 32px 26px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .search-box .btn {
+                padding: 0 10px;
+                min-width: 40px;
+                letter-spacing: 2px;
+                font-size: 16px;
+            }
+            .search-box .input-wrap {
+                padding-left: 8px;
+            }
+            .search-box .input-wrap input {
+                font-size: 14px;
+                padding: 10px 2px;
+            }
+            .cand-item .name {
+                font-size: 15px;
+                max-width: 40%;
+            }
+            .cand-item .author {
+                font-size: 12px;
+                max-width: 18%;
+            }
+            .cand-item .badge {
+                padding: 0 5px;
+                font-size: 9px;
+            }
+            .poem-detail .head .title {
+                font-size: 22px;
+                letter-spacing: 2px;
+            }
+            .char-unit {
+                min-width: 24px;
+            }
+            .char-unit .pinyin-up {
+                font-size: 10px;
+            }
+            .char-unit .hanzi-down {
+                font-size: 18px;
+            }
+            .char-unit.punct-unit .hanzi-down {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app" id="app"></div>
+
+    <script>
+        (function() {
+            const API_BASE = 'https://www.gushiwenku.cn';
+            const SEARCH_URL = API_BASE + '/ajax/search';
+            const POEM_URL = API_BASE + '/ajax/getPoem/';
+            const app = document.getElementById('app');
+
+            function esc(str) {
+                if (!str) return '';
+                return String(str).replace(/[&<>"]/g, (c) => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;'
+                } [c] || c));
+            }
+
+            function stripHtml(s) {
+                if (!s) return '';
+                return String(s).replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+            }
+
+            function isPunctuation(ch) {
+                return /[，。！？；：、·《》「」『』（）—…,.!?;:'"()\[\]{}<>\/\\|@#$%^&*_+=\-—\s]/.test(ch);
+            }
+
+            function buildRubyLine(yuanwen, pinyin) {
+                const chars = [...(yuanwen || '')];
+                let pinyinParts = [];
+                if (pinyin && pinyin.trim()) pinyinParts = pinyin.trim().split(/\s+/);
+                let html = '';
+                let pIndex = 0;
+                for (let i = 0; i < chars.length; i++) {
+                    const ch = chars[i];
+                    if (isPunctuation(ch) || ch.trim() === '') {
+                        html += `<span class="char-unit punct-unit"><span class="pinyin-up">&nbsp;</span><span class="hanzi-down">${esc(ch)}</span></span>`;
+                    } else {
+                        const py = pinyinParts[pIndex] || '';
+                        pIndex++;
+                        html += `<span class="char-unit"><span class="pinyin-up">${esc(py)}</span><span class="hanzi-down">${esc(ch)}</span></span>`;
+                    }
+                }
+                return html;
+            }
+
+            // 最近历史：只保留5条
+            function getRecent() {
+                try { return JSON.parse(localStorage.getItem('gsw_recent') || '[]'); } catch { return []; }
+            }
+
+            function setRecent(arr) { localStorage.setItem('gsw_recent', JSON.stringify(arr)); }
+
+            function pushRecent(d) {
+                if (!d || !d.uuid) return;
+                let arr = getRecent().filter(x => x.uuid !== d.uuid);
+                arr.unshift({ uuid: d.uuid, name: d.name, author: d.author || '' });
+                arr = arr.slice(0, 5); // 只保留最近5项
+                setRecent(arr);
+            }
+
+            function renderRecentTags() {
+                const arr = getRecent();
+                if (!arr.length) return '';
+                return `
+                    <div class="recent visible" id="recentBox">
+                        <span class="label">⟳ 最近</span>
+                        <span class="tags" id="recentTags">
+                            ${arr.map(x => `<span class="tag" data-uuid="${esc(x.uuid)}" title="${esc(x.name)}">${esc(x.name)}${x.author ? ' · ' + esc(x.author) : ''}</span>`).join('')}
+                        </span>
+                        <button class="clear-recent-btn" id="clearRecentBtn" title="清除历史">🗑</button>
+                    </div>`;
+            }
+
+            function parseHash() {
+                const hash = window.location.hash.slice(1) || '/';
+                if (hash === '/' || hash === '') return { page: 'home' };
+                if (hash.startsWith('/search')) {
+                    const params = new URLSearchParams(hash.split('?')[1] || '');
+                    return { page: 'search', q: params.get('q') || '' };
+                }
+                if (hash.startsWith('/poem/')) return { page: 'poem', uuid: hash.split('/poem/')[1] };
+                return { page: 'home' };
+            }
+
+            function navigate(path) { window.location.hash = path; }
+
+            async function renderRoute() {
+                const route = parseHash();
+                if (route.page === 'home') renderHome();
+                else if (route.page === 'search') {
+                    if (route.q.trim()) await renderSearch(route.q.trim());
+                    else navigate('/');
+                } else if (route.page === 'poem') await renderPoem(route.uuid);
+            }
+
+            function renderHome() {
+                const recentHtml = renderRecentTags();
+                app.innerHTML = `
+                    <div class="header">
+                        <h1>诗 笺</h1>
+                        <div class="sub">古 诗 文 · 查 句 寻 韵</div>
+                    </div>
+                    <div class="search-box">
+                        <div class="input-wrap">
+                            <span class="icon">◈</span>
+                            <input id="qInput" type="text" placeholder="输入诗句、标题或作者…" autocomplete="off" />
+                            <span class="clear-btn" id="clearBtn">✕</span>
+                        </div>
+                        <button class="btn" id="searchBtn">寻</button>
+                    </div>
+                    <div class="search-hint">支持按名句、诗题、作者搜索 · 点击候选查看全文</div>
+                    ${recentHtml}
+                    <div class="empty"><span class="big-icon">🖋️</span>输入关键词开始探索古诗文世界</div>
+                    <footer>数据源自 <a href="https://www.gushiwenku.cn/" target="_blank" rel="noopener">古诗文库</a> · 仅供学习参考</footer>`;
+
+                const qInput = document.getElementById('qInput');
+                const searchBtn = document.getElementById('searchBtn');
+                const clearBtn = document.getElementById('clearBtn');
+
+                function toggleClear() { clearBtn.classList.toggle('visible', qInput.value.length > 0); }
+                searchBtn.addEventListener('click', () => {
+                    const q = qInput.value.trim();
+                    if (q) navigate('/search?q=' + encodeURIComponent(q));
+                });
+                qInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const q = qInput.value.trim();
+                        if (q) navigate('/search?q=' + encodeURIComponent(q));
+                    }
+                    toggleClear();
+                });
+                qInput.addEventListener('input', toggleClear);
+                clearBtn.addEventListener('click', () => { qInput.value = ''; qInput.focus(); toggleClear(); });
+
+                // 绑定最近标签点击
+                document.querySelectorAll('#recentTags .tag').forEach(tag => {
+                    tag.addEventListener('click', () => navigate('/poem/' + tag.dataset.uuid));
+                });
+
+                // 清除历史按钮
+                const clearRecentBtn = document.getElementById('clearRecentBtn');
+                if (clearRecentBtn) {
+                    clearRecentBtn.addEventListener('click', () => {
+                        localStorage.removeItem('gsw_recent');
+                        renderHome(); // 重新渲染首页
+                    });
+                }
+            }
+
+            async function renderSearch(q) {
+                app.innerHTML = `
+                    <div class="back-nav">
+                        <button class="back-btn" id="backHomeBtn">← 返回首页</button>
+                        <span class="home-link" id="backHomeLink">诗 笺</span>
+                    </div>
+                    <div class="search-box">
+                        <div class="input-wrap">
+                            <span class="icon">◈</span>
+                            <input id="searchInput" type="text" value="${esc(q)}" placeholder="输入诗句、标题或作者…" autocomplete="off" />
+                            <span class="clear-btn" id="searchClearBtn">✕</span>
+                        </div>
+                        <button class="btn" id="searchAgainBtn">寻</button>
+                    </div>
+                    <div id="searchResultContainer"><div class="status"><span class="spinner"></span>正在搜索「${esc(q)}」…</div></div>
+                    <footer>数据源自 <a href="https://www.gushiwenku.cn/" target="_blank" rel="noopener">古诗文库</a> · 仅供学习参考</footer>`;
+
+                document.getElementById('backHomeBtn').addEventListener('click', () => navigate('/'));
+                document.getElementById('backHomeLink').addEventListener('click', () => navigate('/'));
+
+                const input = document.getElementById('searchInput');
+                const btn = document.getElementById('searchAgainBtn');
+                const clear = document.getElementById('searchClearBtn');
+
+                function toggleClear() { clear.classList.toggle('visible', input.value.length > 0); }
+                btn.addEventListener('click', () => { const nq = input.value.trim(); if (nq) navigate('/search?q=' + encodeURIComponent(nq)); });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') { e.preventDefault();
+                        const nq = input.value.trim(); if (nq) navigate('/search?q=' + encodeURIComponent(nq)); }
+                    toggleClear();
+                });
+                input.addEventListener('input', toggleClear);
+                clear.addEventListener('click', () => { input.value = ''; input.focus(); toggleClear(); });
+                toggleClear();
+
+                try {
+                    const [poems, mingju] = await Promise.all([postSearch(q, '1'), postSearch(q, '3')]);
+                    const boostSet = new Set();
+                    (mingju || []).forEach(m => {
+                        const a = (m.author || '').trim();
+                        const p = (m.poetry_name || '').trim();
+                        if (a && p) boostSet.add(a + '||' + p);
+                    });
+                    const candidates = (poems || []).map(x => {
+                        const name = stripHtml(x.name);
+                        const author = (x.author || '').trim();
+                        return {
+                            uuid: x.uuid,
+                            name,
+                            author,
+                            good: x.good || 0,
+                            has_audio: !!x.audio,
+                            snippet: stripHtml(x.phrases || '').slice(0, 90),
+                            boosted: boostSet.has(author + '||' + name),
+                            exact: name === q,
+                            partial: name.includes(q)
+                        };
+                    }).sort((a, b) => {
+                        if (a.exact !== b.exact) return b.exact - a.exact;
+                        if (a.partial !== b.partial) return b.partial - a.partial;
+                        if (a.boosted !== b.boosted) return b.boosted - a.boosted;
+                        return b.good - a.good;
+                    });
+                    const container = document.getElementById('searchResultContainer');
+                    if (!candidates.length) {
+                        container.innerHTML = `<div class="empty"><span class="big-icon">🔍</span>未找到「${esc(q)}」相关诗文</div>`;
+                    } else {
+                        const cards = candidates.map(c => {
+                            const badges = [];
+                            if (c.has_audio) badges.push('<span class="badge audio">🎧 朗读</span>');
+                            if (c.boosted) badges.push('<span class="badge boost">✦ 名句</span>');
+                            return `<div class="cand-item" data-uuid="${esc(c.uuid)}" title="${esc(c.name)}">
+                                <span class="name">${esc(c.name)}</span>
+                                ${c.author ? `<span class="author">${esc(c.author)}</span>` : ''}
+                                <span class="snippet">${esc(c.snippet)}</span>
+                                ${badges.join('')}
+                            </div>`;
+                        }).join('');
+                        container.innerHTML = `<div class="result-section"><div class="sec-title"><span>搜索结果</span><span class="count">共 ${candidates.length} 篇</span></div><div class="cand-list">${cards}</div></div>`;
+                        container.querySelectorAll('.cand-item').forEach(el => {
+                            el.addEventListener('click', () => navigate('/poem/' + el.dataset.uuid));
+                        });
+                    }
+                } catch (e) {
+                    document.getElementById('searchResultContainer').innerHTML =
+                        `<div class="error">搜索失败，可能由于跨域限制。建议通过本地服务器运行。<br>错误：${esc(e.message)}</div>`;
+                }
+            }
+
+            async function postSearch(key, type, page = 1) {
+                const resp = await fetch(SEARCH_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ key, type, page })
+                });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const data = await resp.json();
+                return Array.isArray(data) ? data : [];
+            }
+
+            async function renderPoem(uuid) {
+                if (!uuid) { navigate('/'); return; }
+                app.innerHTML = `
+                    <div class="back-nav">
+                        <button class="back-btn" id="backSearchBtn">← 返回搜索</button>
+                        <span class="home-link" id="backHomeLink2">诗 笺</span>
+                    </div>
+                    <div id="poemContainer"><div class="status"><span class="spinner"></span>正在加载诗文…</div></div>
+                    <footer>数据源自 <a href="https://www.gushiwenku.cn/" target="_blank" rel="noopener">古诗文库</a> · 仅供学习参考</footer>`;
+
+                document.getElementById('backSearchBtn').addEventListener('click', () => {
+                    const prev = sessionStorage.getItem('lastSearchHash');
+                    navigate(prev || '/');
+                });
+                document.getElementById('backHomeLink2').addEventListener('click', () => navigate('/'));
+
+                try {
+                    const data = await fetchPoem(uuid);
+                    pushRecent(data);
+                    document.getElementById('poemContainer').innerHTML = buildPoemDetail(data);
+                    const backTop = document.getElementById('backTop');
+                    if (backTop) backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+                } catch (e) {
+                    document.getElementById('poemContainer').innerHTML =
+                        `<div class="error">诗文加载失败，可能由于跨域限制。错误：${esc(e.message)}</div>`;
+                }
+            }
+
+            async function fetchPoem(uuid) {
+                const resp = await fetch(POEM_URL + encodeURIComponent(uuid) + '/', {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const d = await resp.json();
+                const title = d.title || {};
+                const content = (d.poem_data && d.poem_data.content) || [];
+                const audio_url = (d.audio_info && d.audio_info.url) || '';
+                const shangxi_raw = (d.shangxi && d.shangxi.data) || [];
+                const shangxi = Array.isArray(shangxi_raw) ? shangxi_raw.map(s => ({ title: s.title || '赏析',
+                    content: s.content || '' })) : [];
+                const xuwen = (d.xuwen && d.xuwen.data) || '';
+                return {
+                    uuid,
+                    name: title.name || '',
+                    author: title.author || '',
+                    dynasty: title.chaodai || '',
+                    title_pinyin: title.pinyin || '',
+                    audio_url,
+                    content: content.map(c => ({
+                        yuanwen: c.yuanwen || '',
+                        pinyin: c.pinyin || '',
+                        yiwen: c.yiwen || '',
+                        zhushi: (c.zhushi || []).map(z => ({ name: z.name || '', notes: z.notes || '' }))
+                    })),
+                    xuwen,
+                    shangxi
+                };
+            }
+
+            function buildPoemDetail(d) {
+                const content = d.content || [];
+                let originalHtml = '';
+                content.forEach(c => {
+                    const yw = c.yuanwen || '';
+                    const py = c.pinyin || '';
+                    if (yw.trim()) originalHtml += `<div class="verse-line-ruby">${buildRubyLine(yw, py)}</div>`;
+                    else originalHtml +=
+                        `<div class="verse-line-ruby"><span class="char-unit punct-unit"><span class="pinyin-up">&nbsp;</span><span class="hanzi-down">&nbsp;</span></span></div>`;
+                });
+                let transHtml = '';
+                content.forEach(c => { if (c.yiwen) transHtml += `<span class="trans-item">${esc(c.yiwen)}</span>`; });
+                if (!transHtml) transHtml = '<span style="color:var(--ink-faint);">（暂无译文）</span>';
+                const noteMap = new Map();
+                content.forEach(c => (c.zhushi || []).forEach(z => {
+                    const n = (z.name || '').trim();
+                    const ns = (z.notes || '').trim();
+                    if (n && ns && !noteMap.has(n)) noteMap.set(n, ns);
+                }));
+                let notesHtml = '';
+                if (noteMap.size) { for (let [w, def] of noteMap) notesHtml +=
+                        `<div class="note-item"><span class="word">${esc(w)}</span><span class="def">${esc(def)}</span></div>`; } else
+                    notesHtml = '<span style="color:var(--ink-faint);">（暂无注释）</span>';
+                let appreciationHtml = '';
+                if (d.xuwen) appreciationHtml +=
+                    `<div class="appr-content"><div class="appr-title">📖 序文 · 创作背景</div>${esc(d.xuwen)}</div>`;
+                (d.shangxi || []).forEach(s => { if (s.content) appreciationHtml +=
+                        `<div class="appr-content"><div class="appr-title">📝 ${esc(s.title)}</div>${esc(s.content)}</div>`; });
+                if (!appreciationHtml) appreciationHtml = '<span style="color:var(--ink-faint);">（暂无赏析）</span>';
+                const audioHtml = d.audio_url ?
+                    `<div class="audio-wrap"><span class="audio-label">🎧 朗读</span><audio controls preload="none" src="${esc(d.audio_url)}"></audio></div>` :
+                    '';
+                return `
+                    <div class="poem-detail">
+                        <div class="head">
+                            <div class="title">${esc(d.name)}</div>
+                            <div class="meta">${d.dynasty ? `<span class="dynasty">〔${esc(d.dynasty)}〕</span>` : ''} ${esc(d.author)}</div>
+                            ${d.title_pinyin ? `<div class="pinyin-title">${esc(d.title_pinyin)}</div>` : ''}
+                        </div>
+                        ${audioHtml}
+                        <div class="block-original"><div class="block-label">📜 原文</div>${originalHtml}</div>
+                        <div class="block-translation"><div class="block-label">🌿 译文</div><div class="trans-text">${transHtml}</div></div>
+                        <div class="block-notes"><div class="block-label">📖 注释</div>${notesHtml}</div>
+                        <div class="block-appreciation"><div class="block-label">✨ 赏析</div>${appreciationHtml}</div>
+                        <div class="back-top" id="backTop">↑ 返回顶部</div>
+                    </div>`;
+            }
+
+            window.addEventListener('hashchange', () => {
+                const route = parseHash();
+                if (route.page === 'search') sessionStorage.setItem('lastSearchHash', window.location.hash);
+                renderRoute();
+            });
+            window.addEventListener('load', () => {
+                if (!window.location.hash) window.location.hash = '/';
+                else renderRoute();
+            });
+        })();
+    </script>
+</body>
+</html>

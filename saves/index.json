@@ -1,0 +1,29 @@
+{
+  "current": "s3",
+  "slots": [
+    {
+      "id": "s1",
+      "char_name": "赵臣业",
+      "birth_year": 1929,
+      "clock_year": 1981,
+      "saved_at": "2026-10-04 23:42:39",
+      "name": "默认存档（旧版迁移）"
+    },
+    {
+      "id": "s2",
+      "char_name": "无名",
+      "birth_year": 1991,
+      "clock_year": 1991,
+      "saved_at": "2026-10-05 11:20:32",
+      "name": "无名 · 1991 年生"
+    },
+    {
+      "id": "s3",
+      "char_name": "无名",
+      "birth_year": 1960,
+      "clock_year": 1960,
+      "saved_at": "2026-10-05 13:22:21",
+      "name": "无名 · 1960 年生"
+    }
+  ]
+}
